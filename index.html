@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CodeGraph — Semantic code intelligence for AI agents</title>
+<meta name="description" content="Pre-indexed code knowledge graph for Claude Code, Cursor, Codex, opencode, and Hermes Agent. ~35% cheaper, ~70% fewer tool calls, 100% local." />
+<meta property="og:title" content="CodeGraph — Semantic code intelligence for AI agents" />
+<meta property="og:description" content="~35% cheaper · ~70% fewer tool calls · 100% local. A pre-indexed knowledge graph that turns dozens of grep/read calls into a handful." />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<canvas id="bgGraph" aria-hidden="true"></canvas>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="22" height="22"><circle cx="6" cy="16" r="3" fill="#8b5cf6"/><circle cx="16" cy="6" r="3" fill="#22d3ee"/><circle cx="26" cy="16" r="3" fill="#22d3ee"/><circle cx="16" cy="26" r="3" fill="#8b5cf6"/><path d="M6 16 L16 6 L26 16 L16 26 Z" stroke="#475569" stroke-width="1.2" fill="none"/></svg>
+      </span>
+      <span>CodeGraph</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#why">Why</a>
+      <a href="#how">How it works</a>
+      <a href="#tools">MCP tools</a>
+      <a href="#langs">Languages</a>
+      <a href="#install">Install</a>
+      <a class="gh" href="https://github.com/colbymchenry/codegraph" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        Star on GitHub
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<section class="hero">
+  <div class="container">
+    <div class="badges">
+      <span class="badge badge-pulse">v0.9.4 · re-validated 2026-05-24</span>
+      <span class="badge">MIT</span>
+      <span class="badge">100% local</span>
+    </div>
+    <h1>
+      Pre-indexed <span class="gradient">code knowledge graph</span><br/>
+      for your AI coding agent.
+    </h1>
+    <p class="lede">
+      Stop paying for agents to re-discover your codebase with grep and Read.
+      CodeGraph parses every supported file into a symbol+edge graph,
+      then exposes it through MCP tools that Claude Code, Cursor, Codex, opencode,
+      and Hermes Agent can query directly.
+    </p>
+
+    <div class="stat-row">
+      <div class="stat"><span class="stat-num">~35%</span><span class="stat-label">cheaper</span></div>
+      <div class="stat"><span class="stat-num">~57%</span><span class="stat-label">fewer tokens</span></div>
+      <div class="stat"><span class="stat-num">~46%</span><span class="stat-label">faster</span></div>
+      <div class="stat"><span class="stat-num">~71%</span><span class="stat-label">fewer tool calls</span></div>
+    </div>
+
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#install">Install in 30 seconds</a>
+      <a class="btn btn-ghost" href="#how">See how it works</a>
+    </div>
+
+    <div class="install-quick" aria-label="One-line install">
+      <div class="install-tab-bar">
+        <button class="install-tab active" data-target="macos">macOS / Linux</button>
+        <button class="install-tab" data-target="windows">Windows</button>
+        <button class="install-tab" data-target="npm">npm</button>
+      </div>
+      <pre class="install-block" data-id="macos"><code><span class="prompt">$</span> curl -fsSL https://raw.githubusercontent.com/colbymchenry/codegraph/main/install.sh | sh</code><button class="copy" data-copy="curl -fsSL https://raw.githubusercontent.com/colbymchenry/codegraph/main/install.sh | sh">Copy</button></pre>
+      <pre class="install-block hidden" data-id="windows"><code><span class="prompt">PS&gt;</span> irm https://raw.githubusercontent.com/colbymchenry/codegraph/main/install.ps1 | iex</code><button class="copy" data-copy="irm https://raw.githubusercontent.com/colbymchenry/codegraph/main/install.ps1 | iex">Copy</button></pre>
+      <pre class="install-block hidden" data-id="npm"><code><span class="prompt">$</span> npx @colbymchenry/codegraph</code><button class="copy" data-copy="npx @colbymchenry/codegraph">Copy</button></pre>
+      <p class="install-note">Self-contained — Node runtime bundled. No native build, no API keys, no telemetry.</p>
+    </div>
+
+    <div class="agents-strip">
+      <span class="agents-label">Configures automatically for</span>
+      <div class="agents-list">
+        <span class="agent-chip">Claude Code</span>
+        <span class="agent-chip">Cursor</span>
+        <span class="agent-chip">Codex CLI</span>
+        <span class="agent-chip">opencode</span>
+        <span class="agent-chip">Hermes Agent</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="why" class="section">
+  <div class="container">
+    <p class="kicker">The problem</p>
+    <h2>Agents waste tokens re-discovering your codebase.</h2>
+    <p class="section-lede">
+      When Claude Code answers "how does X work?" it spawns Explore sub-agents that fan out across
+      grep, glob, and Read. Every file scanned costs tokens. The same discovery happens again next session.
+      CodeGraph pre-builds that map once and lets agents query it directly.
+    </p>
+
+    <div class="compare">
+      <div class="compare-col bad">
+        <h3><span class="dot dot-bad"></span>Without CodeGraph</h3>
+        <ol class="compare-steps">
+          <li>Spawn an Explore sub-agent</li>
+          <li>Glob across the repo</li>
+          <li>Grep for likely symbol names</li>
+          <li>Read 20+ files to find the right one</li>
+          <li>Recurse into call sites</li>
+          <li>Synthesize an answer</li>
+        </ol>
+        <div class="compare-foot">Dozens of tool calls · millions of tokens · 2-3 minutes</div>
+      </div>
+      <div class="compare-arrow" aria-hidden="true">→</div>
+      <div class="compare-col good">
+        <h3><span class="dot dot-good"></span>With CodeGraph</h3>
+        <ol class="compare-steps">
+          <li><code>codegraph_context("how requests reach the DB")</code></li>
+          <li><code>codegraph_explore([handler, router, repo])</code></li>
+          <li>Synthesize an answer</li>
+        </ol>
+        <div class="compare-foot">A handful of calls · zero file reads · seconds</div>
+      </div>
+    </div>
+
+    <div class="bench">
+      <h3>Benchmark: 7 real-world repos · 4 runs/arm · median reported</h3>
+      <div class="bench-table-wrap">
+        <table class="bench-table">
+          <thead>
+            <tr><th>Codebase</th><th>Language</th><th>Cost</th><th>Tokens</th><th>Time</th><th>Tool calls</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>VS Code</td><td>TS · ~10k</td><td>26%</td><td>78%</td><td>52%</td><td>85%</td></tr>
+            <tr><td>Excalidraw</td><td>TS · ~640</td><td>52%</td><td>90%</td><td>73%</td><td>96%</td></tr>
+            <tr><td>Django</td><td>Python · ~3k</td><td>12%</td><td>36%</td><td>19%</td><td>53%</td></tr>
+            <tr><td>Tokio</td><td>Rust · ~790</td><td>82%</td><td>86%</td><td>71%</td><td>92%</td></tr>
+            <tr><td>OkHttp</td><td>Java · ~645</td><td>2%</td><td>13%</td><td>31%</td><td>45%</td></tr>
+            <tr><td>Gin</td><td>Go · ~110</td><td>21%</td><td>34%</td><td>27%</td><td>40%</td></tr>
+            <tr><td>Alamofire</td><td>Swift · ~110</td><td>47%</td><td>64%</td><td>48%</td><td>83%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="bench-note">
+        Each cell = savings vs no-CodeGraph baseline at the median of 4 runs.
+        Bigger codebases benefit most — agents answer from the index with zero file reads,
+        while the baseline thrashes through grep/find/Read.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="how" class="section section-dark">
+  <div class="container">
+    <p class="kicker">How it works</p>
+    <h2>Four stages: extract → store → resolve → auto-sync.</h2>
+
+    <div class="arch-diagram">
+      <div class="arch-box arch-client">
+        <div class="arch-title">Your agent</div>
+        <div class="arch-sub">Claude Code · Cursor · Codex · opencode · Hermes</div>
+        <div class="arch-quote">"How does a request reach the database?"</div>
+        <div class="arch-detail">Calls CodeGraph tools directly — no Explore sub-agent fan-out.</div>
+      </div>
+
+      <div class="arch-pipe" aria-hidden="true">
+        <span class="pipe-label">stdio / MCP</span>
+      </div>
+
+      <div class="arch-box arch-mcp">
+        <div class="arch-title">CodeGraph MCP server</div>
+        <div class="arch-sub">codegraph serve --mcp</div>
+        <div class="arch-tools">
+          <span>context</span><span>trace</span><span>explore</span>
+          <span>search</span><span>callers</span><span>callees</span>
+          <span>impact</span><span>node</span><span>files</span><span>status</span>
+        </div>
+      </div>
+
+      <div class="arch-pipe" aria-hidden="true"><span class="pipe-label">SQL</span></div>
+
+      <div class="arch-box arch-db">
+        <div class="arch-title">SQLite knowledge graph</div>
+        <div class="arch-sub">.codegraph/codegraph.db · WAL · FTS5</div>
+        <div class="arch-schema">
+          <div><strong>nodes</strong>: function · class · method · route · file</div>
+          <div><strong>edges</strong>: calls · imports · extends · implements · references</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="steps">
+      <article class="step">
+        <div class="step-n">01</div>
+        <h3>Extraction</h3>
+        <p>
+          <a href="https://tree-sitter.github.io/" target="_blank" rel="noopener">tree-sitter</a>
+          parses every source file into an AST. Per-language queries lift out nodes
+          (functions, classes, methods, types) and edges (calls, imports, extends, implements).
+          19+ languages share the same pipeline.
+        </p>
+        <pre class="code"><code><span class="kw">// per-language query (TypeScript)</span>
+(call_expression
+  function: (identifier) <span class="op">@</span>callee)            <span class="cm">; emits a call edge</span>
+
+(class_declaration
+  name: (type_identifier) <span class="op">@</span>name
+  body: (class_body) <span class="op">@</span>body)                  <span class="cm">; emits a class node</span></code></pre>
+      </article>
+
+      <article class="step">
+        <div class="step-n">02</div>
+        <h3>Storage — SQLite + FTS5</h3>
+        <p>
+          Everything goes into a single file at <code>.codegraph/codegraph.db</code>.
+          Symbol names are mirrored into an FTS5 virtual table so name lookups are instant
+          across millions of symbols. WAL journaling lets concurrent reads never block on writes.
+        </p>
+        <pre class="code"><code><span class="kw">CREATE TABLE</span> nodes (
+  id        <span class="ty">INTEGER PRIMARY KEY</span>,
+  kind      <span class="ty">TEXT</span>,        <span class="cm">-- function | class | method | route ...</span>
+  name      <span class="ty">TEXT</span>,
+  file_id   <span class="ty">INTEGER</span>,
+  range     <span class="ty">TEXT</span>         <span class="cm">-- start/end line+col</span>
+);
+
+<span class="kw">CREATE TABLE</span> edges (
+  src       <span class="ty">INTEGER</span>,
+  dst       <span class="ty">INTEGER</span>,
+  rel       <span class="ty">TEXT</span>         <span class="cm">-- calls | imports | extends | references ...</span>
+);
+
+<span class="kw">CREATE VIRTUAL TABLE</span> nodes_fts
+  <span class="kw">USING</span> fts5(name, content=<span class="str">'nodes'</span>);</code></pre>
+      </article>
+
+      <article class="step">
+        <div class="step-n">03</div>
+        <h3>Resolution</h3>
+        <p>
+          After extraction, references are resolved across files: <code>foo()</code> →
+          its definition; <code>import { X }</code> → source module; class inheritance chains;
+          framework-specific routing (Django <code>path()</code>, Express <code>app.get()</code>,
+          NestJS <code>@Controller</code> + <code>@Get</code>, Rails routes, Spring
+          <code>@GetMapping</code>, …).
+        </p>
+        <p>
+          The result is a <em>traversable</em> graph: <code>callers(X)</code> returns the
+          set of functions that actually call X, including hops through dynamic dispatch,
+          interfaces, callbacks, and re-render boundaries that grep misses.
+        </p>
+      </article>
+
+      <article class="step">
+        <div class="step-n">04</div>
+        <h3>Auto-sync</h3>
+        <p>
+          The MCP server subscribes to native OS file events
+          (FSEvents on macOS, inotify on Linux, ReadDirectoryChangesW on Windows).
+          Changes are debounced with a 2-second quiet window, filtered to source extensions,
+          and incrementally re-indexed — only touched files re-parse. The graph stays current
+          as you code, zero config.
+        </p>
+        <pre class="code"><code>watcher.on(<span class="str">'change'</span>, debounce(<span class="ty">2000</span>, files =&gt; {
+  <span class="kw">const</span> sources = files.filter(isSupportedExt);
+  cg.<span class="fn">syncFiles</span>(sources);   <span class="cm">// re-parse + re-link only the dirty set</span>
+}));</code></pre>
+      </article>
+    </div>
+
+    <div class="flow-panel">
+      <h3>What an agent actually does, end-to-end</h3>
+      <ol class="flow">
+        <li>
+          <span class="flow-tag">turn 1</span>
+          <div>
+            Agent reads its system prompt and sees: "if <code>.codegraph/</code> exists, answer
+            from the graph — don't delegate to a file-reading sub-agent."
+          </div>
+        </li>
+        <li>
+          <span class="flow-tag">turn 1</span>
+          <div>
+            Calls <code>codegraph_context("how requests reach the database")</code>.
+            The server runs FTS5 search → resolves top candidates → walks
+            <code>callers</code> + <code>callees</code> 1-2 hops → returns a packed
+            relationship map with the relevant source inline.
+          </div>
+        </li>
+        <li>
+          <span class="flow-tag">turn 2</span>
+          <div>
+            If a specific hop needs more depth, agent calls <code>codegraph_trace(handler, db.query)</code>
+            — the server returns each hop's body inline, following dynamic-dispatch edges
+            (interface → impl, callback wiring) that grep can't traverse.
+          </div>
+        </li>
+        <li>
+          <span class="flow-tag">turn 3</span>
+          <div>
+            Synthesize the answer. Typical total: <strong>3-8 tool calls, zero <code>Read</code> calls,
+            ~80% fewer tokens</strong> than the no-CodeGraph baseline.
+          </div>
+        </li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section id="tools" class="section">
+  <div class="container">
+    <p class="kicker">The interface</p>
+    <h2>Ten MCP tools — one for each kind of question.</h2>
+    <p class="section-lede">
+      CodeGraph deliberately exposes a small, intent-shaped surface. Each tool maps to a
+      question agents actually ask, so the model picks the right one without re-deriving
+      what the graph already knows.
+    </p>
+
+    <div class="tools-grid">
+      <div class="tool">
+        <div class="tool-name">codegraph_context</div>
+        <div class="tool-use">"Map this task / feature / area first"</div>
+        <p>Composes search + node + callers + callees in one call. The default first step.</p>
+      </div>
+      <div class="tool">
+        <div class="tool-name">codegraph_trace</div>
+        <div class="tool-use">"How does X reach Y?"</div>
+        <p>Returns the full call path with each hop's body inline — follows dynamic dispatch grep can't.</p>
+      </div>
+      <div class="tool">
+        <div class="tool-name">codegraph_explore</div>
+        <div class="tool-use">"Survey several related symbols at once"</div>
+        <p>One budget-capped call returns source for N related symbols grouped by file + a relationship map.</p>
+      </div>
+      <div class="tool">
+        <div class="tool-name">codegraph_search</div>
+        <div class="tool-use">"Find a symbol by name"</div>
+        <p>FTS5-backed name search across the whole graph. Returns ranked candidates with kind + file.</p>
+      </div>
+      <div class="tool">
+        <div class="tool-name">codegraph_callers</div>
+        <div class="tool-use">"What calls this?"</div>
+        <p>Walk inbound call edges one hop at a time. Filter by file, kind, depth.</p>
+      </div>
+      <div class="tool">
+        <div class="tool-name">codegraph_callees</div>
+        <div class="tool-use">"What does this call?"</div>
+        <p>Walk outbound call edges. The mirror of callers.</p>
+      </div>
+      <div class="tool">
+        <div class="tool-name">codegraph_impact</div>
+        <div class="tool-use">"What breaks if I change this?"</div>
+        <p>Transitive call closure with depth control. Surfaces every site touched by a change.</p>
+      </div>
+      <div class="tool">
+        <div class="tool-name">codegraph_node</div>
+        <div class="tool-use">"Show me this exact symbol"</div>
+        <p>Single symbol fetch — signature, source, range, edges.</p>
+      </div>
+      <div class="tool">
+        <div class="tool-name">codegraph_files</div>
+        <div class="tool-use">"What's in this project?"</div>
+        <p>Indexed file structure. Faster than filesystem scanning and respects <code>.gitignore</code>.</p>
+      </div>
+      <div class="tool">
+        <div class="tool-name">codegraph_status</div>
+        <div class="tool-use">"Is the index healthy?"</div>
+        <p>Counts, last-sync timestamp, journal mode, watcher state.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>Agents are told to answer directly.</strong>
+      The installer writes instructions into each agent's rules file (<code>CLAUDE.md</code>,
+      <code>.cursor/rules/codegraph.mdc</code>, <code>~/.codex/AGENTS.md</code>, …) that
+      steer the model away from delegating exploration to a file-reading sub-agent —
+      because if it does, the sub-agent will grep + Read anyway and the index becomes overhead.
+    </div>
+  </div>
+</section>
+
+<section id="features" class="section section-dark">
+  <div class="container">
+    <p class="kicker">What you get</p>
+    <h2>Built for the way agents actually work.</h2>
+    <div class="features-grid">
+      <div class="feature">
+        <div class="feature-ico">⚡</div>
+        <h3>Smart Context Building</h3>
+        <p>One tool call returns entry points, related symbols, and code snippets — no exploration agents.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-ico">🔎</div>
+        <h3>Full-Text Search</h3>
+        <p>FTS5-powered symbol search across the whole codebase. Instant, even on huge monorepos.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-ico">🧭</div>
+        <h3>Impact Analysis</h3>
+        <p>Trace callers, callees, and the full impact radius of any symbol before making changes.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-ico">🔁</div>
+        <h3>Always Fresh</h3>
+        <p>Native OS file watchers (FSEvents / inotify / ReadDirectoryChangesW) with debounced auto-sync.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-ico">🌐</div>
+        <h3>19+ Languages</h3>
+        <p>TypeScript, JavaScript, Python, Go, Rust, Java, C#, PHP, Ruby, C, C++, Swift, Kotlin, Scala, Dart, Vue, Svelte, Liquid, Pascal, Lua, Luau.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-ico">🛣️</div>
+        <h3>Framework-aware Routes</h3>
+        <p>14 frameworks recognized — links URL patterns to handlers so "callers of view X" surfaces the route binding it.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-ico">🔒</div>
+        <h3>100% Local</h3>
+        <p>No data leaves your machine. No API keys. No external services. SQLite database only.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-ico">📦</div>
+        <h3>Zero-config</h3>
+        <p>Bundled Node runtime. Respects <code>.gitignore</code> automatically. Nothing to wire up per language.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="langs" class="section">
+  <div class="container">
+    <p class="kicker">Coverage</p>
+    <h2>Languages &amp; frameworks.</h2>
+    <div class="two-col">
+      <div>
+        <h3>Languages</h3>
+        <div class="chip-grid">
+          <span class="chip">TypeScript</span><span class="chip">JavaScript</span>
+          <span class="chip">Python</span><span class="chip">Go</span>
+          <span class="chip">Rust</span><span class="chip">Java</span>
+          <span class="chip">C#</span><span class="chip">PHP</span>
+          <span class="chip">Ruby</span><span class="chip">C</span>
+          <span class="chip">C++</span><span class="chip">Swift</span>
+          <span class="chip">Kotlin</span><span class="chip">Scala</span>
+          <span class="chip">Dart</span><span class="chip">Svelte</span>
+          <span class="chip">Vue / Nuxt</span><span class="chip">Liquid</span>
+          <span class="chip">Pascal / Delphi</span><span class="chip">Lua</span>
+          <span class="chip">Luau</span>
+        </div>
+      </div>
+      <div>
+        <h3>Framework-aware routes</h3>
+        <div class="chip-grid">
+          <span class="chip chip-fw">Django</span><span class="chip chip-fw">Flask</span>
+          <span class="chip chip-fw">FastAPI</span><span class="chip chip-fw">Express</span>
+          <span class="chip chip-fw">NestJS</span><span class="chip chip-fw">Laravel</span>
+          <span class="chip chip-fw">Drupal</span><span class="chip chip-fw">Rails</span>
+          <span class="chip chip-fw">Spring</span><span class="chip chip-fw">Gin / chi / mux</span>
+          <span class="chip chip-fw">Axum / actix / Rocket</span><span class="chip chip-fw">ASP.NET</span>
+          <span class="chip chip-fw">Vapor</span><span class="chip chip-fw">React Router</span>
+          <span class="chip chip-fw">SvelteKit</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cli" class="section section-dark">
+  <div class="container">
+    <p class="kicker">CLI</p>
+    <h2>One binary, everything you need.</h2>
+    <div class="cli-grid">
+      <div class="cli-card"><code>codegraph</code><span>Run interactive installer</span></div>
+      <div class="cli-card"><code>codegraph install</code><span>Configure agents (--target, --yes, --location)</span></div>
+      <div class="cli-card"><code>codegraph uninstall</code><span>Reverse the installer for every agent it touched</span></div>
+      <div class="cli-card"><code>codegraph init [path]</code><span>Initialize a project (--index to also index)</span></div>
+      <div class="cli-card"><code>codegraph index [path]</code><span>Full index (--force to re-index)</span></div>
+      <div class="cli-card"><code>codegraph sync [path]</code><span>Incremental update</span></div>
+      <div class="cli-card"><code>codegraph status [path]</code><span>Counts + journal mode + watcher state</span></div>
+      <div class="cli-card"><code>codegraph query &lt;search&gt;</code><span>Search symbols (--kind, --limit, --json)</span></div>
+      <div class="cli-card"><code>codegraph context &lt;task&gt;</code><span>Build context for an AI</span></div>
+      <div class="cli-card"><code>codegraph callers &lt;sym&gt;</code><span>Inbound calls (--limit, --json)</span></div>
+      <div class="cli-card"><code>codegraph callees &lt;sym&gt;</code><span>Outbound calls</span></div>
+      <div class="cli-card"><code>codegraph impact &lt;sym&gt;</code><span>Transitive impact (--depth)</span></div>
+      <div class="cli-card"><code>codegraph affected [files…]</code><span>Tests affected by changed files — pipe from <code>git diff</code></span></div>
+      <div class="cli-card"><code>codegraph serve --mcp</code><span>Start the MCP server</span></div>
+    </div>
+
+    <div class="ci-example">
+      <h3>CI hook: run only the tests your diff actually touches</h3>
+      <pre class="code"><code><span class="cm">#!/usr/bin/env bash</span>
+AFFECTED=$(git diff --name-only HEAD | codegraph affected --stdin --quiet)
+<span class="kw">if</span> [ -n <span class="str">"$AFFECTED"</span> ]; <span class="kw">then</span>
+  npx vitest run $AFFECTED
+<span class="kw">fi</span></code></pre>
+    </div>
+  </div>
+</section>
+
+<section id="library" class="section">
+  <div class="container">
+    <p class="kicker">Programmatic use</p>
+    <h2>Embed CodeGraph in your own tools.</h2>
+    <p class="section-lede">
+      The same engine ships as a TypeScript library. Index a project, query it, watch for
+      changes — all without spinning up the MCP server.
+    </p>
+    <pre class="code code-wide"><code><span class="kw">import</span> CodeGraph <span class="kw">from</span> <span class="str">'@colbymchenry/codegraph'</span>;
+
+<span class="kw">const</span> cg = <span class="kw">await</span> CodeGraph.<span class="fn">init</span>(<span class="str">'/path/to/project'</span>);
+<span class="kw">await</span> cg.<span class="fn">indexAll</span>({
+  onProgress: p =&gt; console.<span class="fn">log</span>(<span class="str">`</span><span class="op">${</span>p.phase<span class="op">}</span><span class="str">: </span><span class="op">${</span>p.current<span class="op">}</span><span class="str">/</span><span class="op">${</span>p.total<span class="op">}</span><span class="str">`</span>)
+});
+
+<span class="kw">const</span> hits      = cg.<span class="fn">searchNodes</span>(<span class="str">'UserService'</span>);
+<span class="kw">const</span> callers   = cg.<span class="fn">getCallers</span>(hits[<span class="ty">0</span>].node.id);
+<span class="kw">const</span> context   = <span class="kw">await</span> cg.<span class="fn">buildContext</span>(<span class="str">'fix login bug'</span>, { maxNodes: <span class="ty">20</span>, includeCode: <span class="kw">true</span>, format: <span class="str">'markdown'</span> });
+<span class="kw">const</span> impact    = cg.<span class="fn">getImpactRadius</span>(hits[<span class="ty">0</span>].node.id, <span class="ty">2</span>);
+
+cg.<span class="fn">watch</span>();    <span class="cm">// auto-sync on file changes</span>
+cg.<span class="fn">unwatch</span>();  <span class="cm">// stop watching</span>
+cg.<span class="fn">close</span>();</code></pre>
+  </div>
+</section>
+
+<section id="install" class="section section-cta">
+  <div class="container">
+    <p class="kicker">Install</p>
+    <h2>Three commands. One project. Done.</h2>
+    <ol class="steps-num">
+      <li>
+        <h3>1 · Install the binary</h3>
+        <pre class="code"><code><span class="cm"># macOS / Linux</span>
+curl -fsSL https://raw.githubusercontent.com/colbymchenry/codegraph/main/install.sh | sh
+
+<span class="cm"># Windows (PowerShell)</span>
+irm https://raw.githubusercontent.com/colbymchenry/codegraph/main/install.ps1 | iex
+
+<span class="cm"># or via npm</span>
+npx @colbymchenry/codegraph</code></pre>
+        <p>The interactive installer auto-detects Claude Code, Cursor, Codex CLI, opencode, and Hermes Agent — writes the MCP config + instructions file for each one you pick. Use <code>--yes --target=auto</code> in CI.</p>
+      </li>
+      <li>
+        <h3>2 · Restart your agent</h3>
+        <p>So the MCP server loads. Claude Code, Cursor, Codex CLI, opencode, Hermes — pick whichever you use.</p>
+      </li>
+      <li>
+        <h3>3 · Initialize your project</h3>
+        <pre class="code"><code>cd your-project
+codegraph init -i</code></pre>
+        <p>Builds the per-project knowledge graph at <code>.codegraph/codegraph.db</code> and wires up any project-local agent surfaces (e.g. Cursor's <code>.cursor/rules/codegraph.mdc</code>). Once <code>.codegraph/</code> exists in a project, your agent uses CodeGraph automatically.</p>
+      </li>
+    </ol>
+
+    <div class="cta-final">
+      <a class="btn btn-primary btn-lg" href="https://github.com/colbymchenry/codegraph" target="_blank" rel="noopener">View on GitHub →</a>
+      <a class="btn btn-ghost btn-lg" href="https://www.npmjs.com/package/@colbymchenry/codegraph" target="_blank" rel="noopener">npm package</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div>
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="20" height="20"><circle cx="6" cy="16" r="3" fill="#8b5cf6"/><circle cx="16" cy="6" r="3" fill="#22d3ee"/><circle cx="26" cy="16" r="3" fill="#22d3ee"/><circle cx="16" cy="26" r="3" fill="#8b5cf6"/><path d="M6 16 L16 6 L26 16 L16 26 Z" stroke="#475569" stroke-width="1.2" fill="none"/></svg>
+        </span>
+        <span>CodeGraph</span>
+      </div>
+      <p class="footer-tag">Pre-indexed code knowledge graph for AI coding agents.</p>
+    </div>
+    <div class="footer-cols">
+      <div>
+        <h4>Project</h4>
+        <a href="https://github.com/colbymchenry/codegraph" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.npmjs.com/package/@colbymchenry/codegraph" target="_blank" rel="noopener">npm</a>
+        <a href="https://github.com/colbymchenry/codegraph/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
+      </div>
+      <div>
+        <h4>Agents</h4>
+        <a href="https://www.anthropic.com/claude-code" target="_blank" rel="noopener">Claude Code</a>
+        <a href="https://www.cursor.com" target="_blank" rel="noopener">Cursor</a>
+        <a href="https://github.com/openai/codex" target="_blank" rel="noopener">Codex CLI</a>
+        <a href="https://opencode.ai" target="_blank" rel="noopener">opencode</a>
+      </div>
+      <div>
+        <h4>This page</h4>
+        <span>Unofficial landing page</span>
+        <span>Built from the public README</span>
+      </div>
+    </div>
+  </div>
+  <div class="container footer-fine">
+    <span>Not affiliated with CodeGraph or Anthropic. All trademarks belong to their respective owners.</span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
